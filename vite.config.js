@@ -2,15 +2,16 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { splitVendorChunkPlugin } from 'vite';
 import viteCompression from 'vite-plugin-compression';
+import path from 'path';
 
 export default defineConfig({
   plugins: [
     react({
-      include: "**/*.{jsx,tsx}",
+      include: "**/*.{js,jsx,ts,tsx}",
       babel: {
         plugins: [],
         babelrc: false,
-        configFile: false
+        configFile: false,
       }
     }),
     splitVendorChunkPlugin(),
@@ -18,51 +19,58 @@ export default defineConfig({
       algorithm: 'gzip',
       ext: '.gz',
       threshold: 1024,
-      deleteOriginFile: true
+      deleteOriginFile: false
     })
   ],
+  resolve: {
+    extensions: ['.mjs', '.js', '.jsx', '.ts', '.tsx', '.json'],
+    alias: {
+      '@': path.resolve(__dirname, './src'), // Src klasörü için alias ekledim
+    }
+  },
   build: {
-    minify: 'terser',
+    outDir: 'dist',
+    assetsDir: 'assets',
+    sourcemap: false, // Production'da sourcemap'i kapattım
+    minify: 'terser', // Daha iyi minification
     terserOptions: {
       compress: {
-        drop_console: true,
-        drop_debugger: true,
-        pure_funcs: ['console.log'],
-        passes: 2,
-        ecma: 2020
+        drop_console: true, // Console.log'ları kaldır
       },
-      mangle: {
-        safari10: true
-      }
-    },
-    cssCodeSplit: true,
-    cssMinify: true,
-    modulePreload: {
-      polyfill: true
     },
     rollupOptions: {
       output: {
         manualChunks: {
-          'react-vendor': ['react', 'react-dom'],
-          'three-vendor': ['three'],
-          'globe-vendor': ['react-globe.gl'],
-          'utils': ['./src/utils/index.js'],
-          'components': ['./src/components/Header/index.js', './src/components/Hero/Hero.jsx']
+          vendor: ['react', 'react-dom', 'three', 'react-globe.gl'], // Vendor chunk'ları ayır
         },
-        chunkFileNames: 'assets/[name]-[hash].js',
-        entryFileNames: 'assets/[name]-[hash].js',
-        assetFileNames: 'assets/[name]-[hash].[ext]'
+        chunkFileNames: 'assets/js/[name].[hash].js',
+        entryFileNames: 'assets/js/[name].[hash].js',
+        assetFileNames: ({name}) => {
+          if (/\.(gif|jpe?g|png|svg)$/.test(name ?? '')) {
+            return 'assets/images/[name].[hash][extname]';
+          }
+          if (/\.css$/.test(name ?? '')) {
+            return 'assets/css/[name].[hash][extname]';
+          }
+          return 'assets/[ext]/[name].[hash][extname]';
+        },
       }
     },
-    chunkSizeWarningLimit: 1000,
-    sourcemap: false,
-    cssCodeSplit: true,
-    assetsInlineLimit: 4096
+    target: 'esnext', // Modern browsers için optimize et
   },
   server: {
-    port: 3000
+    port: 3000,
+    cors: true, // CORS'u ekledim
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Content-Type': 'application/javascript',
+    }
   },
   optimizeDeps: {
-    include: ['react', 'react-dom', 'three', 'react-globe.gl']
+    include: ['react', 'react-dom', 'three', 'react-globe.gl'],
+    exclude: [] // Gerekirse exclude edilecek paketler buraya
+  },
+  esbuild: {
+    jsxInject: `import React from 'react'`, // Otomatik React import
   }
 });
