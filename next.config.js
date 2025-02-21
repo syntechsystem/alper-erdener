@@ -2,7 +2,8 @@ const crypto = require('crypto');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'standalone', // Cloudflare Pages için önerilen 
+  output: 'standalone', // Cloudflare Pages için önerilen
+  reactStrictMode: true, 
   images: {
     remotePatterns: [
       {
