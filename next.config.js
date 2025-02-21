@@ -2,7 +2,8 @@ const crypto = require('crypto');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'standalone', // Cloudflare Pages için önerilen
+  output: 'export', // Outputs a Single-Page Application (SPA).
+  distDir: './dist', // Changes the build output directory to `./dist/`.
   reactStrictMode: true, 
   images: {
     remotePatterns: [

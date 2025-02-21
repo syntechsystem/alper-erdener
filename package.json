@@ -1,18 +1,12 @@
 {
-  "name": "react-modern-header",
-  "private": false,
+  "name": "syntech-website",
+  "private": true,
   "version": "1.0.0",
-  "main": "dist/index.js",
-  "module": "dist/index.js",
-  "files": [
-    "dist"
-  ],
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "prepare": "npm run build"
+    "lint": "next lint"
   },
   "peerDependencies": {
     "react": "^18.2.0",
