@@ -5,7 +5,14 @@ import viteCompression from 'vite-plugin-compression';
 
 export default defineConfig({
   plugins: [
-    react(),
+    react({
+      include: "**/*.{jsx,tsx}",
+      babel: {
+        plugins: [],
+        babelrc: false,
+        configFile: false
+      }
+    }),
     splitVendorChunkPlugin(),
     viteCompression({
       algorithm: 'gzip',
