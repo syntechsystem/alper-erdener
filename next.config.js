@@ -2,7 +2,7 @@ const crypto = require('crypto');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
+  reactStrictMode: true, 
   images: {
     remotePatterns: [
       {
@@ -17,6 +17,7 @@ const nextConfig = {
     minimumCacheTTL: 60,
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    unoptimized: false, // This replaces optimizeImages
   },
   poweredByHeader: false,
   compress: true,
@@ -77,9 +78,8 @@ const nextConfig = {
     return config;
   },
   experimental: {
-    optimizeFonts: true,
-    optimizeImages: true,
     scrollRestoration: true
+    // Remove optimizeFonts and optimizeImages from here
   }
 };
 
